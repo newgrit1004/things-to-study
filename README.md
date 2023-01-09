@@ -17,10 +17,14 @@
 ## 디자인 패턴
 * [디자인 패턴 웹사이트(refactoring.guru)](https://refactoring.guru/ko)
 
-## 흥미를 위한 알고리즘
-* 밀러-라빈 소수 판별법
-* 분할 상환 분석(Amortized Analysis)
-* Quick Selection
+
+<details>
+<summary><a href="./algorithm/algorithm.md"><strong>흥미를 위한 알고리즘</strong></a></summary>
+
+- 분할 상환 분석(Amortized Analysis)
+- 밀러-라빈 소수 판별법
+- Quick Selection
+
 
 ## 코드 최적화
 * 클린 코드
@@ -31,11 +35,16 @@
 * [데이터 로그 설계, 데이터 로깅, 이벤트 로그 설계, 데이터 QA의 모든 것](https://zzsza.github.io/data/2021/06/13/data-event-log-definition/)
 * [로그 데이터로 유저 이해하기](https://techblog.woowahan.com/2536/)
 
-## 딥러닝 최적화
-* 분산 딥러닝
-* JAX
-* AMP(Automatic Mixed Precision)
-* 몬테 카를로 드롭아웃(Monte Carlo dropout)
+
+
+<details>
+<summary><a href="./machine_learning_optimization/machine_learning_optimization.md"><strong>머신러닝 최적화</strong></a></summary>
+
+- JAX
+- Bag of Tricks for Image Classification with Convolutional Neural Networks
+- AMP(Automatic Mixed Precision)
+- 모델 경량화
+- 분산 딥러닝
 
 
 ## 데이터 분석
@@ -64,6 +73,8 @@
     * [비바리퍼블리카 기술 블로그](https://toss.tech/)
 * 하이퍼커넥트
     * [하이퍼커넥트 기술 블로그](https://hyperconnect.github.io/)
+* 엔씨소프트
+    * [엔씨소프트 기술 블로그](https://about.ncsoft.com/news/rd)
 * 당근마켓
     * [당근마켓 기술 블로그](https://medium.com/daangn)
 * 야놀자

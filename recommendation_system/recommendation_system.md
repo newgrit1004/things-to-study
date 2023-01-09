@@ -197,16 +197,128 @@
 
 ## #3
 ### 협업 필터링
-* KNN
-    *
+* 협업 필터링 모델
+    * 정의
+        * 사용자의 구매 패턴이나 평점을 가지고 다른 사람들의 구매 패턴, 평점을 통해 추천을 하는 방법
+        * 추가적인 사용자의 개인정보나 아이템의 정보 없이도 추천이 가능
+        * Netflix Prize Competition에서 우승한 알고리즘
+    * 방법
+        * 최근접 이웃 기반(Neighborhood based method)
+            * KNN
+        * 잠재 요인 기반(Latent Factor Collaborative Filtering)
+            * SGD
+            * ALS
+    * 장점
+        * 도메인 지식이 필요하지 않음
+        * 시작 단계의 모델로 선택하기 좋음
+    * 단점
+        * 새로운 아이템에 대해 다루기가 힘듬
+        * side features(고객의 개인정보, 아이템의 추가정보)를 포함하기 어려움
 
 
-* SGD
-    *
+* Neighborhood based method
+    * 머신러닝 알고리즘
+        * KNN
+            * 정의
+                * 새로운 데이터가 들어왔을 때, 새로운 데이터에 대한 클래스를 알아내기 위해 가장 근접한 K개의 neighbors 데이터를 이용하는 방법
+    * 알고리즘 종류
+        * User-based collaborative filtering
+            * 정의
+                * 사용자의 구매 패턴 또는 평점과 유사한 사용자를 찾아서 추천 리스트 생성
+                * 유사한 사용자를 찾은 뒤, 유사한 사용자가 선호 또는 추천받았던 리스트를 기반으로 추천 리스트 생성
+            * 방법
+                * 사용자-아이템 explicit feedback이 담겨진 표가 주어졌을 때, 특정 사용자와 다른 사용자간의 유사도를 코사인 유사도 또는 피어슨 유사도를 계산.
+                * 만약 표에 explicit feedback이 빈 칸이 있을 경우, 이 값들은 제외하고 유사도를 계산하여, 현재 사용자와 가장 유사도가 높은 N명의 유저들(이하 A) 구함.
+                * 사용자의 특정 아이템(이하 I)의 빈 칸을 추정하기 위해서 A가 I에 줬던 explicit feedback 값을 이용.
+                * A가 I에 줬던 bias를 제거하기 위해서, 각 사용자별로 explicit feedback average를 제거.
+
+        * Item-based collaborative filtering
+            * 정의
+                * 특정 사용자가 준 점수 간의 유사한 상품을 찾아서 추천 리스트 생성.
+            * 방법
+                * User-based collaborative filtering 방법을 item 기반으로 하면 동일.
+
+    * 장점
+        * 특정 item을 추천하는 이유를 정당화하기 좋음
+        * 새로운 item과 user가 추가되어도 안정적
+    * 단점
+        * user 기반 방법의 경우 시간, 속도, 메모리가 많이 필요
+        * 특정 유저의 top-K에만 관심이 있음
+        * 특정 유저의 이웃 중에 아무도 특정 아이템 I를 평가하지 않았을 경우, 특정 유저에게 I에 대한 예측 평가를 제공할 수 없음
 
 
-* ALS
-    *
+* Latent Factor Collaborative Filtering
+    * 정의
+        * rating matrix에서 사용자와 상품을 잘 표현하는 latent factor를 찾는 방법
+        * 사용자-아이템 상호 작용 행렬을 2개의 저차원 직사각형 행렬의 곱으로 분해하여 작동하는 방식
+    * 알고리즘 종류
+        * SGD
+            * 정의
+                * 고유값 분해(eigen value decomposition)와 같은 행렬을 대각화하는 방법
+                * objective function은 <b>실제 평점 matrix와 유저 latent 행렬과 아이템 latent 행렬의 곱의 차이를 최소화하는 것</b>
+            * 방법
+                * 1. User Latent와 Item Latent를 임의로 초기화한다. 이때, User Latent(U)의 row 개수는 user의 수, Item Latent(V)의 Transponse행렬의 column 개수는 Item의 수이다. U의 column 개수와 V의 row 개수는 같으며 유저가 임의로 정한다. 일반적으로 숫자 20을 사용한다.
+                * 2. 실제 rating matrix의 값과 추정된 rating matrix의 값의 차이를 계산하며 gradient descent를 진행한다.
+                * 3. 모든 평점에 대해 2번의 과정을 반복하며(epoch 1), 만약 실제 rating matrix에 빈 칸이 존재하면, 이것은 계산을 스킵한다.
+            * 결과 사용 방법
+                * 학습이 끝난 이후, predicted rating matrix를 이용해서 기존에 빈 칸이었던 값들을 채워서 평가 이후 추천여부 결정 가능
+                * 학습이 잘 된 User Latent나 Item Latent를 기반으로 추천해주는 것도 가능
+            * 장점
+                * 다른 loss function 사용하는 것도 가능
+                * 병렬처리 가능
+            * 단점
+                * 수렴 속도가 느림
+        * ALS
+            * 정의
+                * 기존의 SGD가 두개의 행렬(User Latent, Item Latent)을 동시에 최적화하는 방법이라면, ALS는 두 행렬 중 하나를 고정시키고 다른 하나의 행렬을 순차적으로 반복하면서 최적화하는 방법
+                * 두 행렬 중 하나의 행렬을 고정시키고 다른 행렬을 최적화하므로 수렴된 행렬을 찾을 수 있다는 장점이 있음
+            * 방법
+                * 1. User Latent, Item Latent를 초기화
+                * 2. Item Latent를 고정하고 User Latent를 최적화
+                * 3. User Latent를 고정하고 Item Latent를 최적화
+                * 4. 2,3번 과정 반복
+                * 5. 빈 칸은 모두 0으로 바꿔줌
+            * 장점
+                * SGD보다 수렴속도 빠름
+                * parallelized가 가능함
+            * 단점
+                * loss square만 사용 가능
+
+
+## #4
+### 평가 함수
+* 평가 함수를 다양하게 알아야 하는 이유
+    * 시나리오
+        * 내가 추천해준 영화를 고객이 보았는가?
+            * 실제 고객의 만족도가 낮을 수도 있음
+            * 유튜브 같은 경우는 체류 시간을 메트릭으로 사용
+        * 내가 추천해준 영화를 고객이 높은 점수로 평점을 주었는가?
+    * 지표
+        * 정확도(Accuracy)
+            * 내가 추천해준 아이템 중 고객이 본 아이템의 개수로 평가
+                * 추천하지 않은 아이템의 개수는 추천한 아이템의 개수에 비해 굉장히 많기 때문
+                * 상위 n개의 상품을 추천하였을 때 정확도를 기준으로 판단
+        * MAP
+            * Precision
+                * True Positive/(True Positive + False Positive)
+            * AP(Average Precision)
+                * 추천한 K개의 item의 precision을 평균낸 것
+            * MAP(Mean Average Precision)
+                * N명의 사용자의 AP를 평균낸 값
+                * 추천의 순서에 따라 값이 차이가 남
+                * 상위 k개의 추천에 대해서만 평가
+            * NDCG(Normalized Discounted Cumulative Gain)
+                * 검색 알고리즘 랭킹 퀄리티를 측정하는 메트릭
+                * 추천엔진은 user와 연관있는 item을 추천해주므로, 검색 작업을 수행하는 것이라 생각하는 것이 가능
+                * CG
+                    * A = [3,2,1], B=[1,2,3] 일때, 둘의 CG는 list 안의 모든 원소를 더한 값인 6이라 생각 가능
+                    * A가 B보다 나은 추천 결과이지만, CG에서는 순서를 고려하지 못함
+                * DCG
+                    * 분모에 log2(idx+1)을 설정해서 더해주므로써 처음에 맞췄을 때 가중치를 더 많이 받도록 설정가능
+                * NDCG
+                    * 이상적인 순서 = Ideal Order = 주어진 추천 순서에서 relevance 기준으로 내림차순한 것(가장 좋을 수 있는 추천 순서)
+                    * NDCG = DCG/Ideal DCG
+
 
 
 
