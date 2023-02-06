@@ -3,8 +3,10 @@
 - [JAX](#1)
 - [Bag of Tricks for Image Classification with Convolutional Neural Networks](#2)
 - [AMP(Automatic Mixed Precision)](#3)
-- [모델 경량화](#4)
-- [분산 딥러닝](#5)
+- [모델 경량화 및 추론 속도 향상](#4)
+- [Triton Inference Server](#5)
+- [분산 딥러닝](#6)
+- [NVIDIA DALI(Data Loading Libary)](#7)
 
 
 ## #1
@@ -243,3 +245,26 @@ FP32만 사용했을 때보다 이미지 분류 작업에서 유사하거나 더
 - [[MODUCON 2021] 실용적인 딥러닝 모델 경량화 & 최적화를 해보았습니다-임종국[AI + X]](https://www.youtube.com/watch?v=QZekRr4xUAk)
 - [The Lottery Ticket Hypothesis Finding Sparse, Trainable Neural Networks 논문 리뷰](https://ysbsb.github.io/pruning/2020/04/21/Lottery-ticket-hypothesis.html)
 - [kindle](https://github.com/JeiKeiLim/kindle)
+
+
+## #5
+### Triton Inference Server
+
+Triton Inference Server는 NVIDIA에서 개발한 오픈소스 AI Inference 서비스 소프트웨어이다. TensorRT, Tensorflow, PyTorch, ONNX, OpenVINO 등 여러 딥러닝 및 머신러닝 프레임워크에서 작성된 모델을 배포하는 것이 가능하다. Triton은 클라우드, 데이터 센터, 엣지 및 임베디드 디바이스의 NVIDIA GPU, x86 및 ARM CPU 또는 AWS Inferentia의 추론을 지원한다. 이러한 장점들을 통해, Triton Inference Server는 기존 딥러닝 모델 배포의 어려움을 해결해줄 수 있다.
+
+기존 딥러닝 배포의 어려움은 크게 3가지로 나눌 수 있다. 첫 번째로 모델 연구자와 시스템 개발자의 배경지식 차이에서 발생하는 경우가 많았다. 모델 연구자는 모델 연구 코드 및 딥러닝 관련 지식을 잘 안다. 하지만 추론 서버 코드 및 백엔드 인프라 관련 지식이 상대적으로 부족하다. 시스템 개발자는 추론 서버 및 백엔드 인프라 지식은 잘 알지만, 모델 관련 지식이 상대적으로 부족하다. 또한 딥러닝 프레임워크마다 배포 방식(e.g. TFServing, TorchServe, ...)이 다르며 모델 추론 로직과는 별개로 전처리/후처리 코드가 필요할 수 있다. 두 번째로, 딥러닝 모델 파라미터의 사이즈가 커서 git으로 관리하는 것은 어렵다. 세 번째로, GPU 자원을 사용하는 것은 비싼 행위이기 때문이므로 처리량을 높이기 위해 GPU를 사용하는 경우에는 GPU를 효과적으로 사용하는 것이 중요하다.
+
+Triton Inference Server를 사용하면 다양한 딥러닝 프레임워크 배포를 사용할 수 있다는 장점이 있다. 또한, python 모델과 앙상블 모델을 지원해서 전처리 및 후처리 코드를 포함해서 유연하게 사용하는 것이 가능하다. 또한 Triton Inference Server가 제공하는 모듈 및 피처들이 많은데, 그 중 instance-group 옵션과 dynamic batching 옵션이 throughput을 크게 향상 시킬 수 있다.
+
+Triton Inference Server는 instance-group이라는 옵션을 model configuration에서 설정하여 각 모델에게 병렬 실행을 허용할수 있는 개수를 설정할 수 있다. 기본값으로, triton은 각 모델에게 시스템에서 사용가능한 각 GPU에 대해 단일 인스턴스를 제공한다. 예를 들어 모델 1이 3개의 model instance를 사용할 수 있도록 설정했다면, 4번째 추론 요청은 첫 3개의 추론 요청 중 1개가 완료된 이후에 처리가 가능하다.
+
+Dynamic Batch란 클라이언트에서 고정된 크기의 배치로 요청을 보내는 것이 아닌, 서버에서 자동으로 배치를 만들어 인퍼런스를 수행하는 기능을 의미한다. 서버는 들어온 요청을 큐에 쌓고 max_batch_size만큼 배치가 구성될 때까지 max_queue_delay_microseconds 시간만큼 기다린다. 시간이 지나면, 해당 시점까지 쌓인 배치만큼 배치 인퍼런스를 수행한다.
+
+또한, model analyzer라는 기능을 제공하여 여러 옵션(batch_size, concurrency, dynamic batching 등)을 조합하여 사용하였을 때 해당 조합에 대한 throughput, max cpu memory usage, max gpu memory usage, average gpu utilization 등의 정보를 제공받을 수 있다. 이에 따라 여러 모델을 1개의 GPU에서 inference를 하게 되는 경우, model analyzer의 결과값을 통해 각 모델 별로 GPU memory 및 throughput을 최적으로 할당할 수 있는 조합을 찾을 수 있게 된다.
+
+
+
+#### References
+- [triton-inference-server git](https://github.com/triton-inference-server/server)
+- [어떻게 더 많은 모델을 더 빠르게 배포할 것인가? Zero-time delivery cycle from research to production](https://tv.naver.com/v/23650633)
+- [모델 서빙 최적화를 위한 프레임워크 선정과 서빙 성능 극대화하기](https://tech.kakaopay.com/post/model-serving-framework/#triton-%EB%AA%A8%EB%8D%B8-%EC%84%9C%EB%B9%99-%EC%84%B1%EB%8A%A5-%EA%B7%B9%EB%8C%80%ED%99%94%ED%95%98%EA%B8%B0)
