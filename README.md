@@ -3,7 +3,7 @@
 * [파이썬](#파이썬)
 * [디자인 패턴](#디자인-패턴)
 * [흥미를 위한 알고리즘](#흥미를-위한-알고리즘)
-* [코드 최적화](#코드-최적화)
+* [최적화](#최적화)
 * [로그 설계](#로그-설계)
 * [딥러닝 최적화](#딥러닝-최적화)
 * [데이터 분석](#데이터-분석)
@@ -18,33 +18,26 @@
 * [디자인 패턴 웹사이트(refactoring.guru)](https://refactoring.guru/ko)
 
 
-<details>
-<summary><a href="./algorithm/algorithm.md"><strong>흥미를 위한 알고리즘</strong></a></summary>
-
+## 흥미를 위한 알고리즘
 - 분할 상환 분석(Amortized Analysis)
-- 밀러-라빈 소수 판별법
-- Quick Selection
+- 프리발즈 알고리즘(Freivalds' algorithm)
+- 밀러-라빈 소수 판별법(#TODO)
+- Quick Selection(#TODO)
 
 
-## 코드 최적화
-* 클린 코드
-* 프로파일링
+## 최적화
+* 코드 프로파일링
+* 머신 러닝 최적화
+    - JAX
+    - Bag of Tricks for Image Classification with Convolutional Neural Networks
+    - AMP(Automatic Mixed Precision)
+    - 모델 경량화
+    - 분산 딥러닝
 
 ## 로그 설계
 * [[NDC19]좋은 로그란 무엇인가?:좋은 로그를 위해 고려해야 할 것들](https://speakerdeck.com/devinjeon/jamag-ndc19-joheun-rogeuran-mueosinga-joheun-rogeureul-wihae-goryeohaeya-hal-geosdeul)
 * [데이터 로그 설계, 데이터 로깅, 이벤트 로그 설계, 데이터 QA의 모든 것](https://zzsza.github.io/data/2021/06/13/data-event-log-definition/)
 * [로그 데이터로 유저 이해하기](https://techblog.woowahan.com/2536/)
-
-
-
-<details>
-<summary><a href="./machine_learning_optimization/machine_learning_optimization.md"><strong>머신러닝 최적화</strong></a></summary>
-
-- JAX
-- Bag of Tricks for Image Classification with Convolutional Neural Networks
-- AMP(Automatic Mixed Precision)
-- 모델 경량화
-- 분산 딥러닝
 
 
 ## 데이터 분석
@@ -85,10 +78,7 @@
     * (Kurly만의 MLOps 구축하기 - 초석 다지기)[https://helloworld.kurly.com/blog/first-mlops/]
 
 
-
 ## Cheatsheet 사이트
 * leetcode cheatsheet
     * [Pirate King](https://www.piratekingdom.com/)
     * [NeetCode](https://neetcode.io/)
-* AWS cheatsheet
-    *
