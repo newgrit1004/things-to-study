@@ -74,10 +74,6 @@
     * [야놀자 기술 블로그](https://medium.com/yanolja/archive)
 * 데브시스터즈
     * [데브시스터즈 기술 블로그](https://tech.devsisters.com/)
-* 컬리
-    * (Kurly만의 MLOps 구축하기 - 초석 다지기)[https://helloworld.kurly.com/blog/first-mlops/]
-
-
 ## Cheatsheet 사이트
 * leetcode cheatsheet
     * [Pirate King](https://www.piratekingdom.com/)
